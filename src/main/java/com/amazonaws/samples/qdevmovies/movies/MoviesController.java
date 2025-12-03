@@ -80,8 +80,18 @@ public class MoviesController {
             logger.info("Search completed. Found {} movies", searchResults.size());
             return "movies";
             
-        } catch (Exception e) {
-            logger.error("Error occurred during movie search: {}", e.getMessage(), e);
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid search parameters provided: {}", e.getMessage(), e);
+            model.addAttribute("movies", List.of());
+            model.addAttribute("genres", movieService.getAllGenres());
+            model.addAttribute("searchPerformed", true);
+            model.addAttribute("searchName", name);
+            model.addAttribute("searchId", id);
+            model.addAttribute("searchGenre", genre);
+            model.addAttribute("errorMessage", "Shiver me timbers! Invalid search parameters provided, matey!");
+            return "movies";
+        } catch (RuntimeException e) {
+            logger.error("Runtime error occurred during movie search: {}", e.getMessage(), e);
             model.addAttribute("movies", List.of());
             model.addAttribute("genres", movieService.getAllGenres());
             model.addAttribute("searchPerformed", true);
